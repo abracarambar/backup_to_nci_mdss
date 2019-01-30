@@ -14,7 +14,7 @@ def main():
     with open ('./token.txt') as fin:
         fin.readline()
         for line in fin:
-            token = line.strip().split()
+            token = str(line.strip().split())
             print token    
 
     #vcf_backup(runID, normal_sample, tumour_sample, token)
