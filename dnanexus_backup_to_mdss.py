@@ -20,7 +20,7 @@ def main():
     #vcf_backup(runID, normal_sample, tumour_sample, token)
     #backup alignment folders:
     #bam_backup(runID, normal_sample, tumour_sample, token)
-    inputfastq_backup(runID, normal_sample, tumour_sample, token)
+    #inputfastq_backup(runID, normal_sample, tumour_sample, token)
 
    
 def my_parse_args(parser):
