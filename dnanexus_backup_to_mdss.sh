@@ -6,7 +6,7 @@ token="$3"
 
 #NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
 NCIbackupfolder="./NCIbackupfolder"
-[[ -d $NCIbackupfolder ]] || mkdir NCIbackupfolder
+[[ -d $NCIbackupfolder ]] || mkdir $NCIbackupfolder
 dx login --token $token --noproject
 
 #for fastq files, retrive all files matching to given sample
@@ -14,7 +14,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     filepath="$1"
     filedir=`dirname "$filepath"`
     samplename="$2"
-    mkdir $NCIbackupfolder/$samplename\_fastq_files
+    [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
     cd $NCIbackupfolder/$samplename\_fastq_files
     dx find data --property external_id="$samplename" --path "$filepath" --brief
     
