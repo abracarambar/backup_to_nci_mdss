@@ -1,12 +1,12 @@
 #!/bin/bash
 
-
 source /g/data3/rj76/software/dx-toolkit/environment
 pwd
 token="$3"
 
+#NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
+NCIbackupfolder="./NCIbackupfolder"
 [[ -d $NCIbackupfolder ]] || mkdir NCIbackupfolder
-NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
 dx login --token $token --noproject
 
 #for fastq files, retrive all files matching to given sample
@@ -20,14 +20,14 @@ if [[ $1 == *"inputFastq"* ]]; then
     
     for filename in `dx find data --property external_id="$samplename" --path "$filepath" --brief`
     do
-       dx download -a -f "$filename" -o $NCIbackupfolder && touch "$filename".done
+       dx download -a -f "$filename" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done
        #check md5 sums and integrity of file
 	   dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "inputFastq" --name "$filename" | cut -d ':' -f 2`
 	   echo "File was downloaded from DNANexus succesfully"
 	   touch "$filename".OK
     
        #download the associated attibutes of file stored in json
-       dx describe "$filepath" --json >> "$filename".json
+       dx describe "$filepath":"$filename" --json >> "$filename".json
        echo "File attributes were downloaded from DNANexus successfully";
     done
 #all other files
