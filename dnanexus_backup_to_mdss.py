@@ -12,15 +12,15 @@ def main():
     print normal_sample, tumour_sample, runID
     SCRIPTDIR='g/data3/rj76/scripts'
     with open ('./token.txt') as fin:
-        fin.readline()
+        #fin.readline()
         for line in fin:
             token = str(line.strip().split())
-            print token    
+            print token 
 
     #vcf_backup(runID, normal_sample, tumour_sample, token)
     #backup alignment folders:
     #bam_backup(runID, normal_sample, tumour_sample, token)
-    #inputfastq_backup(runID, normal_sample, tumour_sample, token)
+    inputfastq_backup(runID, normal_sample, tumour_sample, token)
 
    
 def my_parse_args(parser):
