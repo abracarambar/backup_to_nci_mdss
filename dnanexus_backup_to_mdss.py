@@ -63,11 +63,11 @@ def vcf_backup(runID, normal_sample, tumour_sample, token):
 def inputfastq_backup(runID, normal_sample, tumour_sample, token):
     inputfastq_file_path = 'inputFastq/'
     print inputfastq_file_path
-    #for sample in [normal_sample, tumour_sample]:
-    for sample in normal_sample:
-        cmd = ['bash', 'dnanexus_backup_to_mdss.sh', '"' + runID + '":"' + inputfastq_file_path, sample + '"', token]
+    for sample in [normal_sample, tumour_sample]:
+    #for sample in normal_sample:
+        cmd = ['bash', 'dnanexus_backup_to_mdss.sh', '"' + runID + '":"' + inputfastq_file_path + '"', sample + token]
         print cmd
-        subprocess.check_call(cmd)                           
+        #subprocess.check_call(cmd)                           
     
 
 #remove the file and json file
