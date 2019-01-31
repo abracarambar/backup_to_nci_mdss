@@ -65,7 +65,8 @@ def inputfastq_backup(runID, normal_sample, tumour_sample, token):
     print inputfastq_file_path
     #for sample in [normal_sample, tumour_sample]:
     for sample in normal_sample:
-        cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID + ':' + inputfastq_file_path, sample, token]
+        cmd = ['bash', 'dnanexus_backup_to_mdss.sh', '"' + runID + '":"' + inputfastq_file_path, sample + '"', token]
+        print cmd
         subprocess.check_call(cmd)                           
     
 

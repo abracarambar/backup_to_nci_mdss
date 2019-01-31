@@ -1,21 +1,14 @@
 #!/bin/bash
 
-projectname="$1"
-filepath="$2"
-NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
-#to do: fetch token in file
-token="DZY1vSM53HgWsOjKTkxuMJhrIA5vpEAo"
-token="$3"
+
 source /g/data3/rj76/software/dx-toolkit/environment
 pwd
+token="$3"
 
 [[ -d $NCIbackupfolder ]] || mkdir NCIbackupfolder
-
-filename=`basename "$filepath"`
-filedir=`dirname "$filepath"`
-
+NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
 dx login --token $token --noproject
-#dx login --token DZY1vSM53HgWsOjKTkxuMJhrIA5vpEAo --noproject
+
 if [[ $filepath == *"inputFastq"* ]]; then
     filepath="$1"
     filedir=`dirname "$filepath"`
@@ -35,6 +28,13 @@ if [[ $filepath == *"inputFastq"* ]]; then
        echo "File attributes were downloaded from DNANexus successfully";
     done
 else
+    projectname="$1"
+    filepath="$2"
+    
+    filename=`basename "$filepath"`
+    filedir=`dirname "$filepath"`
+    #to do: fetch token in file
+    
     dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder && touch "$filename".done
     #move into the backup folder
     cd $NCIbackupfolder
