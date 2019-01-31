@@ -13,7 +13,6 @@ def main():
     normal_sample, tumour_sample, runID = my_parse_args(parser)
     print normal_sample, tumour_sample, runID
     SCRIPTDIR='g/data3/rj76/scripts'
-    toekn = ()
     with open ('./token.txt') as fin:
         #fin.readline()
         for line in fin:

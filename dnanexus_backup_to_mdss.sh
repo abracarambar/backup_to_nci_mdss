@@ -18,7 +18,6 @@ if [[ $1 == *"inputFastq"* ]]; then
     #project-FBj2Qjj0py0YVyV03BBpK4by
     projectname=`echo $projectname_dir | cut -f1 -d ':'`
     echo "$projectname"
-    #projectname=`sed 's/\:\.*//' $projectname_dir`
     #LKCGP-P000204-251965-01-04-01-D1
     samplename="$2"
     [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
@@ -32,23 +31,23 @@ if [[ $1 == *"inputFastq"* ]]; then
     
     for filepath in `dx find data --class file --norecurse --property external_id="$samplename" --path "$projectname_dir"  | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'`
     do
-    	filename=`echo $filepath | cut -f2 -d '/'`;
-    	echo "$filename";
+    	filename=`echo $filepath | cut -f2 -d '/'`
+    	echo "$filename"
     	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
-    	filedir=`echo $filepath | cut -f1 -d '/'`;
-    	echo "$filedir";
+    	filedir=`echo $filepath | cut -f1 -d '/'`
+    	echo "$filedir"
     	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder";
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
-        && touch "$NCIbackupfolder"/"$filename".done;
+        && touch $NCIbackupfolder/$filename.done
         
         #check md5 sums and integrity of file
 	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
-	    && touch "$NCIbackupfolder"/"$filename".OK;
+	    && touch $NCIbackupfolder/$filename.OK
     
         #download the associated attibutes of file stored in json
-        echo "Downloading $filename attributes from DNANexus";
-        dx describe "$projectname":"$filename" --json >> "$filename".json;
+        echo "Downloading $filename attributes from DNANexus"
+        dx describe "$projectname":"$filepath" --json >> "$filename".json
         
         echo "Setting file permissions for $samplename fastq folder"
 		cd $NCIbackupfolder
@@ -106,7 +105,7 @@ else
 	fi
 	
 	#set permissions
-	echo "Setting file permissions for $filename $filename.json"
+	echo "Setting file permissions for $filename and for $filename.json"
 	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
 	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json
 	
