@@ -37,9 +37,9 @@ if [[ $1 == *"inputFastq"* ]]; then
 	    echo "File was downloaded from DNANexus succesfully"
 	    touch "$filename".OK
     
-       #download the associated attibutes of file stored in json
-       dx describe "$projectname":"$filename" --json >> "$filename".json
-       echo "File attributes were downloaded from DNANexus successfully";
+        #download the associated attibutes of file stored in json
+        dx describe "$projectname":"$filename" --json >> "$filename".json
+        echo "File attributes were downloaded from DNANexus successfully";
     done
 #all other files
 else
