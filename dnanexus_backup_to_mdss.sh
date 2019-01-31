@@ -17,6 +17,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     projectname_dir="$1"
     #project-FBj2Qjj0py0YVyV03BBpK4by
     projectname=`echo $projectname_dir | cut -f1 -d ':'`
+    echo "$projectname"
     #projectname=`sed 's/\:\.*//' $projectname_dir`
     #LKCGP-P000204-251965-01-04-01-D1
     samplename="$2"
@@ -24,15 +25,18 @@ if [[ $1 == *"inputFastq"* ]]; then
     cd $NCIbackupfolder/$samplename\_fastq_files
     echo "Extract all fastq file names for $samplename"
     cmd="dx find data --class file --norecurse --property external_id=$samplename --path $projectname_dir | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'"
+    echo $cmd
     eval $cmd
     #dx find data --property external_id=LKCGP-P000204-251965-01-04-01-D1 --path project-FBj2Qjj0py0YVyV03BBpK4by:inputFastq
     #/inputFastq/HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     
     for filepath in `dx find data --class file --norecurse --property external_id="$samplename" --path "$projectname_dir"  | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'`
     do
-    	filename=`echo "$filepath" | cut -f3 -d '/'`
+    	filename=`echo $filepath | cut -f3 -d '/'`
+    	echo "$filename"
     	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
-    	filedir=`dirname "$filepath"`
+    	filedir=`echo $filepath | cut -f2 -d '/'`
+    	echo "$filedir"
     	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done
@@ -43,6 +47,7 @@ if [[ $1 == *"inputFastq"* ]]; then
         #download the associated attibutes of file stored in json
         echo "Downloading $filename attributes from DNANexus"
         dx describe "$projectname":"$filename" --json >> "$filename".json;
+
     done
 #all other files
 else
