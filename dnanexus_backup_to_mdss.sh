@@ -5,7 +5,7 @@ pwd
 token="$3"
 current_dir=`pwd`
 #NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
-NCIbackupfolder="$current_dir\/NCIbackupfolder"
+NCIbackupfolder="$current_dir/NCIbackupfolder"
 [[ -d $NCIbackupfolder ]] || mkdir $NCIbackupfolder
 
 #login to dnanexus
@@ -13,19 +13,27 @@ dx login --token $token --noproject
 
 #for fastq files, retrive all files matching to given sample
 if [[ $1 == *"inputFastq"* ]]; then
+    #project-FBj2Qjj0py0YVyV03BBpK4by:inputFastq/
     projectname_dir="$1"
+    #project-FBj2Qjj0py0YVyV03BBpK4by
     projectname=`cut -f1 -d ':' $projectname_dir`
+    #LKCGP-P000204-251965-01-04-01-D1
     samplename="$2"
     [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
     cd $NCIbackupfolder/$samplename\_fastq_files
+    #dx find data --property external_id=LKCGP-P000204-251965-01-04-01-D1 --path project-FBj2Qjj0py0YVyV03BBpK4by:inputFastq
     dx find data --property external_id="$samplename" --path "$projectname_dir" | tr -s ' ' ' ' | cut -f6 -d ' '
+    #/inputFastq/HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     
     for filepath in `dx find data --property external_id="$samplename" --path "$filepath" | tr -s ' ' ' ' | cut -f6 -d ' '`
     do
+    	filename=`cut -f3 -d '/' filepath`
+    	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     	filedir=`dirname "$filepath"`
+    	#inputFastq
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done
         #check md5 sums and integrity of file
-	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "inputFastq" --name "$filename" | cut -d ':' -f 2`
+	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2`
 	    echo "File was downloaded from DNANexus succesfully"
 	    touch "$filename".OK
     
