@@ -6,6 +6,8 @@ import subprocess
 
 def main():
     '''
+    place your DNANexus token in a token.txt file within the folder you are running the scripts
+    to do: remove files once they have downloaded
     '''
     parser = argparse.ArgumentParser()
     normal_sample, tumour_sample, runID = my_parse_args(parser)
@@ -61,7 +63,7 @@ def vcf_backup(runID, normal_sample, tumour_sample, token):
         subprocess.check_call(cmd)
 
 def inputfastq_backup(runID, normal_sample, tumour_sample, token):
-    inputfastq_file_path = 'inputFastq/'
+    inputfastq_file_path = 'inputFastq'
     print inputfastq_file_path
     for sample in [normal_sample, tumour_sample]:
     #for sample in normal_sample:

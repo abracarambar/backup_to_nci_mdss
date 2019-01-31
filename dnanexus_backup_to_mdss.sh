@@ -11,7 +11,7 @@ NCIbackupfolder="$current_dir/NCIbackupfolder"
 #login to dnanexus
 dx login --token $token --noproject
 
-#for fastq files, retrive all files matching to given sample
+#for fastq files, retrive all files matching to a given sample
 if [[ $1 == *"inputFastq"* ]]; then
     #project-FBj2Qjj0py0YVyV03BBpK4by:inputFastq/
     projectname_dir="$1"
@@ -22,12 +22,12 @@ if [[ $1 == *"inputFastq"* ]]; then
     [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
     cd $NCIbackupfolder/$samplename\_fastq_files
     #dx find data --property external_id=LKCGP-P000204-251965-01-04-01-D1 --path project-FBj2Qjj0py0YVyV03BBpK4by:inputFastq
-    dx find data --property external_id="$samplename" --path "$projectname_dir" | tr -s ' ' ' ' | cut -f6 -d ' '
+    dx find data --property external_id="$samplename" --path "$projectname_dir" | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'
     #/inputFastq/HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     
     for filepath in `dx find data --property external_id="$samplename" --path "$filepath" | tr -s ' ' ' ' | cut -f6 -d ' '`
     do
-    	filename=`cut -f3 -d '/' filepath`
+    	filename=`cut -f3 -d '/' $filepath`
     	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     	filedir=`dirname "$filepath"`
     	#inputFastq
