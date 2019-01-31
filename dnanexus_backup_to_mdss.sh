@@ -49,27 +49,27 @@ if [[ $1 == *"inputFastq"* ]]; then
         echo "Downloading $filename attributes from DNANexus"
         dx describe "$projectname":"$filepath" --json >> "$filename".json
         
-        echo "Setting file permissions for $samplename fastq folder"
-		cd $NCIbackupfolder
-		setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder\/$samplename\_fastq_files
-		setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder\/$samplename\_fastq_files
-		
-		#create tar file via jobfs
-		echo "Creating tar file for $samplename fastq folder"
-		tar -cvf $PBS_JOBFS/$samplename\_fastq_files.tar $NCIbackupfolder\/$samplename\_fastq_files
-		tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $PBS_JOBFS/$samplename\_fastq_files.tar.contents
+    echo "Setting file permissions for $samplename fastq folder"
+	cd $NCIbackupfolder
+	setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder/$samplename\_fastq_files
+	setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder/$samplename\_fastq_files
 	
-		if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]; then
-			echo "Uploading the TAR to massdata"
-	    	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
-	    	#echo "Keep a copy of tar contents"
-	    	cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
-	    	echo "Verifying the TAR has been transferred successfully"
-	    	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
-		else    
-    		echo "Tar already exists on mdss!"
-    	exit 1
-    	fi
+	#create tar file via jobfs
+	echo "Creating a tar file for $samplename fastq folder"
+	tar -cvf $PBS_JOBFS/$samplename\_fastq_files.tar $NCIbackupfolder\/$samplename\_fastq_files
+	tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $PBS_JOBFS/$samplename\_fastq_files.tar.contents
+
+	if [ $(mdss -P tx70 ls dnanexus_backup/${samplename}.tar | wc -l) = 0 ]; then
+		echo "Uploading the tar file to massdata"
+    	mdss -P tx70 put $PBS_JOBFS/${samplename}\_fastq_files.tar dnanexus_backup/
+    	#echo "Keep a copy of tar contents"
+    	cp $PBS_JOBFS/${samplename}\_fastq_files.tar.contents $NCIbackupfolder
+    	echo "Verifying the tar file has been transferred successfully"
+    	mdss -P tx70 verify -v dnanexus_backup/${samplename}\_fastq_files.tar
+	else    
+		echo "The tar file already exists on mdss!"
+	exit 1
+	fi
     done
 #all other files
 else
