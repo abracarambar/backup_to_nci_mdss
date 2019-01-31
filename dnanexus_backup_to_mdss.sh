@@ -39,15 +39,38 @@ if [[ $1 == *"inputFastq"* ]]; then
     	echo "$filedir";
     	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder";
-        dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done;
+        dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        && touch "$NCIbackupfolder"/"$filename".done;
         
         #check md5 sums and integrity of file
 	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
-	    & touch "$filename".OK;
+	    && touch "$NCIbackupfolder"/"$filename".OK;
     
         #download the associated attibutes of file stored in json
         echo "Downloading $filename attributes from DNANexus";
         dx describe "$projectname":"$filename" --json >> "$filename".json;
+        
+        echo "Setting file permissions for $samplename fastq folder"
+		cd $NCIbackupfolder
+		setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder\/$samplename\_fastq_files
+		setfacl -Rm group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $NCIbackupfolder\/$samplename\_fastq_files
+		
+		#create tar file via jobfs
+		echo "Creating tar file for $samplename fastq folder"
+		tar -cvf $PBS_JOBFS/$samplename\_fastq_files.tar $NCIbackupfolder\/$samplename\_fastq_files
+		tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $PBS_JOBFS/$samplename\_fastq_files.tar.contents
+	
+		if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]; then
+			echo "Uploading the TAR to massdata"
+	    	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
+	    	#echo "Keep a copy of tar contents"
+	    	cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
+	    	echo "Verifying the TAR has been transferred successfully"
+	    	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
+		else    
+    		echo "Tar already exists on mdss!"
+    	exit 1    
+	fi
 
     done
 #all other files
@@ -81,29 +104,27 @@ else
 	    mv ${filename}.json $newjson
 	    filename=$newfilename
 	    echo $filename
-	fi    
+	fi
+	
+	#set permissions
+	echo "Setting file permissions for $filename $filename.json"
+	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
+	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json
+	
+	#create tar file via jobfs
+	echo "Creating tar file"
+	tar -cvf $PBS_JOBFS/${filename}.tar $filename $filename.json
+	tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
+	
+	if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]; then
+		echo "Uploading the TAR to massdata"
+    	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
+    	#echo "Keep a copy of tar contents"
+    	cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
+    	echo "Verifying the TAR has been transferred successfully"
+    	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
+	else    
+    	echo "Tar already exists on mdss!"
+    	exit 1    
+	fi	
 fi
-
-#set permissions
-echo "Setting file permissions for $filename $filename.json"
-setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
-setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json
-echo "Files permissions set"
-
-#tar via jobfs
-tar -cvf $PBS_JOBFS/${filename}.tar $filename $filename.json
-echo "File tar created"
-tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
-
-if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]; then
-	echo "Uploading the TAR to massdata"
-    mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
-    #echo "Keep a copy of tar contents"
-    cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
-    echo "Verifying the TAR has been transferred successfully"
-    mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
-else    
-    echo "Tar already exists on mdss!"
-    exit 1    
-fi
-echo "File tar created"
