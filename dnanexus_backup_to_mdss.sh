@@ -48,6 +48,7 @@ if [[ $1 == *"inputFastq"* ]]; then
         #download the associated attibutes of file stored in json
         echo "Downloading $filename attributes from DNANexus"
         dx describe "$projectname":"$filepath" --json >> "$filename".json
+    done
         
     echo "Setting file permissions for $samplename fastq folder"
 	cd $NCIbackupfolder
@@ -70,7 +71,7 @@ if [[ $1 == *"inputFastq"* ]]; then
 		echo "The tar file already exists on mdss!"
 	exit 1
 	fi
-    done
+    
 #all other files
 else
     projectname="$1"
