@@ -3,31 +3,34 @@
 source /g/data3/rj76/software/dx-toolkit/environment
 pwd
 token="$3"
-
+current_dir=`pwd`
 #NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
-NCIbackupfolder="./NCIbackupfolder"
+NCIbackupfolder="$current_dir\/NCIbackupfolder"
 [[ -d $NCIbackupfolder ]] || mkdir $NCIbackupfolder
+
+#login to dnanexus
 dx login --token $token --noproject
 
 #for fastq files, retrive all files matching to given sample
 if [[ $1 == *"inputFastq"* ]]; then
-    filepath="$1"
-    filedir=`dirname "$filepath"`
+    projectname_dir="$1"
+    projectname=`cut -f1 -d ':' $projectname_dir`
     samplename="$2"
     [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
     cd $NCIbackupfolder/$samplename\_fastq_files
-    dx find data --property external_id="$samplename" --path "$filepath" --brief
+    dx find data --property external_id="$samplename" --path "$projectname_dir" | tr -s ' ' ' ' | cut -f6 -d ' '
     
-    for filename in `dx find data --property external_id="$samplename" --path "$filepath" --brief`
+    for filepath in `dx find data --property external_id="$samplename" --path "$filepath" | tr -s ' ' ' ' | cut -f6 -d ' '`
     do
-       dx download -a -f "$filename" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done
-       #check md5 sums and integrity of file
-	   dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "inputFastq" --name "$filename" | cut -d ':' -f 2`
-	   echo "File was downloaded from DNANexus succesfully"
-	   touch "$filename".OK
+    	filedir=`dirname "$filepath"`
+        dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files && touch "$filename".done
+        #check md5 sums and integrity of file
+	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "inputFastq" --name "$filename" | cut -d ':' -f 2`
+	    echo "File was downloaded from DNANexus succesfully"
+	    touch "$filename".OK
     
        #download the associated attibutes of file stored in json
-       dx describe "$filepath":"$filename" --json >> "$filename".json
+       dx describe "$projectname":"$filename" --json >> "$filename".json
        echo "File attributes were downloaded from DNANexus successfully";
     done
 #all other files
