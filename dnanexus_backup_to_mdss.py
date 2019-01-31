@@ -11,10 +11,11 @@ def main():
     normal_sample, tumour_sample, runID = my_parse_args(parser)
     print normal_sample, tumour_sample, runID
     SCRIPTDIR='g/data3/rj76/scripts'
+    toekn = ()
     with open ('./token.txt') as fin:
         #fin.readline()
         for line in fin:
-            token = str(line.strip().split())
+            token = str(line.strip())
             print token 
 
     #vcf_backup(runID, normal_sample, tumour_sample, token)
@@ -62,7 +63,8 @@ def vcf_backup(runID, normal_sample, tumour_sample, token):
 def inputfastq_backup(runID, normal_sample, tumour_sample, token):
     inputfastq_file_path = 'inputFastq/'
     print inputfastq_file_path
-    for sample in [normal_sample, tumour_sample]:
+    #for sample in [normal_sample, tumour_sample]:
+    for sample in normal_sample:
         cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID + ':' + inputfastq_file_path, sample, token]
         subprocess.check_call(cmd)                           
     
