@@ -25,7 +25,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     dx find data --property external_id="$samplename" --path "$projectname_dir" | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'
     #/inputFastq/HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     
-    for filepath in `dx find data --property external_id="$samplename" --path "$filepath" | tr -s ' ' ' ' | cut -f6 -d ' '`
+    for filepath in `dx find data --property external_id="$samplename" --path "$filepath" | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'`
     do
     	filename=`cut -f3 -d '/' $filepath`
     	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
