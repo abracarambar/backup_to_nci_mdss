@@ -69,9 +69,8 @@ if [[ $1 == *"inputFastq"* ]]; then
 	    	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
 		else    
     		echo "Tar already exists on mdss!"
-    	exit 1    
-	fi
-
+    	exit 1
+    	fi
     done
 #all other files
 else
@@ -98,9 +97,9 @@ else
     #rename filename
     echo "Fixing g.vcf names"
     if [[ $filename == *"gvcf"* ]]; then
-	    newfilename="$(echo ${filename} | sed -e 's/gvcf/g\.vcf/')";
+	    newfilename="$(echo ${filename} | sed -e 's/gvcf/g\.vcf/')"
 	    mv $filename $newfilename
-	    newjson="$(echo ${filename}.json | sed -e 's/gvcf/g\.vcf/')";
+	    newjson="$(echo ${filename}.json | sed -e 's/gvcf/g\.vcf/')"
 	    mv ${filename}.json $newjson
 	    filename=$newfilename
 	    echo $filename
@@ -116,15 +115,16 @@ else
 	tar -cvf $PBS_JOBFS/${filename}.tar $filename $filename.json
 	tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
 	
-	if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]; then
+	if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]
+	then
 		echo "Uploading the TAR to massdata"
     	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
     	#echo "Keep a copy of tar contents"
     	cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
     	echo "Verifying the TAR has been transferred successfully"
     	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
-	else    
+	else
     	echo "Tar already exists on mdss!"
-    	exit 1    
-	fi	
+    	exit 1
+	fi
 fi
