@@ -16,25 +16,40 @@ filedir=`dirname "$filepath"`
 
 dx login --token $token --noproject
 #dx login --token DZY1vSM53HgWsOjKTkxuMJhrIA5vpEAo --noproject
-if [[ $filepath == *"project"* ]]; then
-dx find data --property external_id="$filepath" --path :inputFastq
+if [[ $filepath == *"inputFastq"* ]]; then
+    filepath="$1"
+    filedir=`dirname "$filepath"`
+    samplename="$2"
+    mkdir $NCIbackupfolder/$samplename\_fastq_files
+    cd $NCIbackupfolder/$samplename\_fastq_files
+    for filename in `dx find data --property external_id="$samplename" --path "$filepath" --brief`
+    do
+       dx download -a -f "$filename" -o $NCIbackupfolder && touch "$filename".done
+       #check md5 sums and integrity of file
+	   dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "Inputfastq" --name "$filename" | cut -d ':' -f 2`
+	   echo "File was downloaded from DNANexus succesfully"
+	   touch "$filename".OK
+    
+       #download the associated attibutes of file stored in json
+       dx describe "$projectname":"$filepath" --json >> "$filename".json
+       echo "File attributes were downloaded from DNANexus successfully";
+    done
+else
+    dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder && touch "$filename".done
+    #move into the backup folder
+    cd $NCIbackupfolder
 
-dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder && touch "$filename".done
+    #check md5 sums and integrity of file
+    dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "$projectname":"$filedir"  --name "$filename" | cut -d ':' -f 2`
 
-dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder && touch "$filename".done
+    echo "File was downloaded from DNANexus succesfully"
+    touch "$filename".OK
 
-#move into the backup folder
-cd $NCIbackupfolder
-
-#check md5 sums and integrity of file
-dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "$projectname":"$filedir"  --name "$filename" | cut -d ':' -f 2`
-
-echo "File was downloaded from DNANexus succesfully"
-touch "$filename".OK
-
-#download the associated attibutes of file stored in json
-dx describe "$projectname":"$filepath" --json >> "$filename".json
-echo "File attributes were downloaded from DNANexus successfully"
+    #download the associated attibutes of file stored in json
+    dx describe "$projectname":"$filepath" --json >> "$filename".json
+    echo "File attributes were downloaded from DNANexus successfully"
+    
+fi
 
 #rename filename
 #if file is g.vcf, then fix:
@@ -46,7 +61,6 @@ if [[ $filename == *"gvcf"* ]]; then
     filename=$newfilename
     echo $filename
 fi
- 
 
 setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
 setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json

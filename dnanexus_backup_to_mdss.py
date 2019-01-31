@@ -59,7 +59,7 @@ def vcf_backup(runID, normal_sample, tumour_sample, token):
         cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID, file_path, token]
         subprocess.check_call(cmd)
 
-def inputfastq_backup(runID, normal_sample, tumour_sample):
+def inputfastq_backup(runID, normal_sample, tumour_sample, token):
     inputfastq_file_path = 'inputFastq/'
     print inputfastq_file_path
     for sample in [normal_sample, tumour_sample]:
