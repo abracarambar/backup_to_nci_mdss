@@ -9,7 +9,7 @@ token="$3"
 NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
 dx login --token $token --noproject
 
-if [[ $filepath == *"inputFastq"* ]]; then
+if [[ $1 == *"inputFastq"* ]]; then
     filepath="$1"
     filedir=`dirname "$filepath"`
     samplename="$2"
