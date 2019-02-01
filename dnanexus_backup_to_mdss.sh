@@ -88,18 +88,28 @@ else
     filedir=`dirname "$filepath"`
     
     echo "Downloading $filename from DNANexus"
-    dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder \
-    && touch $NCIbackupfolder/$filename.done
+    #dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder \
+    #&& touch $NCIbackupfolder/$filename.done
+    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done";
+    echo $cmd;
+    eval $cmd;
+    
     #move into the backup folder
     cd $NCIbackupfolder
 
     #check md5 sums and integrity of file
-    dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "$projectname":"$filedir"  --name "$filename" | cut -d ':' -f 2` \
-    & touch "$filename".OK
-
+    #dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "$projectname":"$filedir"  --name "$filename" | cut -d ':' -f 2` \
+    #& touch "$filename".OK
+    cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK"
+	echo $cmd;
+    eval $cmd;
+    
     #download the associated attibutes of file stored in json
     echo "Downloading $filename attributes from DNANexus"
-    dx describe "$projectname":"$filepath" --json >> "$filename".json
+    #dx describe "$projectname":"$filepath" --json >> "$filename".json
+    cmd="dx describe $projectname:$filepath --json >> $filename.json"
+    echo $cmd;
+    eval $cmd;
     
     #if file is g.vcf, then fix
     #rename filename

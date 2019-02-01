@@ -32,11 +32,11 @@ def my_parse_args(parser):
 def bam_backup(runID, normal_sample, tumour_sample, token):
     bam_file_paths = ['alignments/' + normal_sample + '.dedup.realigned.bam',
                      'alignments/' + normal_sample + '.dedup.realigned.bam.bai',
-                     'alignments/' + normal_sample + '.dedup.realigned.bam.tdf',
+                     'alignments/' + normal_sample + '.dedup.realigned.tdf',
                      'alignments/' + tumour_sample + '.merged.dedup.realigned.bam',
                      'alignments/' + tumour_sample + '.merged.dedup.realigned.bam.bai',
-                     'alignments/' + tumour_sample + '.merged.dedup.realigned.bam.tdf']
-    print bam_file_paths
+                     'alignments/' + tumour_sample + '.merged.dedup.realigned.tdf']
+    #print bam_file_paths
     for file_path in bam_file_paths:
         cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID, file_path, token]
         subprocess.check_call(cmd)
@@ -52,18 +52,17 @@ def vcf_backup(runID, normal_sample, tumour_sample, token):
                     'variants/' + sample_code + '.' + tumour_code + 'vs' + normal_code + '.strelka.vcf.gz.tbi',
                     'variants/' + sample_code + '.' + tumour_code + 'vs' + normal_code + '.strelka.filtered.vep.vcf.gz',
                     'variants/' + sample_code + '.' + tumour_code + 'vs' + normal_code + '.strelka.filtered.vep.vcf.gz.tbi']
-    print vcf_file_paths
+    #print vcf_file_paths
     for file_path in vcf_file_paths:
         cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID, file_path, token]
         subprocess.check_call(cmd)
 
 def inputfastq_backup(runID, normal_sample, tumour_sample, token):
     inputfastq_file_path = 'inputFastq'
-    print inputfastq_file_path
+    #print inputfastq_file_path
     for sample in [normal_sample, tumour_sample]:
     #for sample in normal_sample:
         cmd = ['bash', 'dnanexus_backup_to_mdss.sh', runID + ':' + inputfastq_file_path, sample, token]
-        print cmd
         subprocess.check_call(cmd)                           
     
 
