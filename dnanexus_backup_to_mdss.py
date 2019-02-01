@@ -7,7 +7,7 @@ import subprocess
 def main():
     '''
     place your DNANexus token in a token.txt file within the folder you are running the scripts
-    to do: remove files once they have downloaded
+    to do: check files downloaded ok and remove files once they have downloaded
     '''
     parser = argparse.ArgumentParser()
     normal_sample, tumour_sample, runID = my_parse_args(parser)
@@ -19,9 +19,9 @@ def main():
             token = str(line.strip())
             print token 
 
-    #vcf_backup(runID, normal_sample, tumour_sample, token)
+    vcf_backup(runID, normal_sample, tumour_sample, token)
     #backup alignment folders:
-    #bam_backup(runID, normal_sample, tumour_sample, token)
+    bam_backup(runID, normal_sample, tumour_sample, token)
     inputfastq_backup(runID, normal_sample, tumour_sample, token)
 
    
