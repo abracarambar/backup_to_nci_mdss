@@ -43,20 +43,36 @@ if [[ $1 == *"inputFastq"* ]]; then
     	echo "$fastqfilepathmd5"
        	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
-    	if [ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ]; then
-        	dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
-        	&& touch $NCIbackupfolder/$filename.done
-        fi
-        dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
-        && touch $NCIbackupfolder/$filename.md5.done
+    	#remove this lien when fix done##
+    	#if [ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ]; then
+    		#dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        	#&& touch $NCIbackupfolder/$filename.done
+		cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder/$samplename_fastq_files && touch $NCIbackupfolder/$filename.done";
+    	echo $cmd;
+		eval $cmd;
+        	
+        #fi
+        
+        #dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        #&& touch $NCIbackupfolder/$filename.md5.done
+        cmd="dx download -a -f $projectname:$fastqfilepathmd5 -o $NCIbackupfolder/$samplename_fastq_files && touch $NCIbackupfolder/$filename.md5.done";
+        echo $cmd;
+    	eval $cmd;
+        
         
         #check md5 sums and integrity of file
-	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
-	    && touch $NCIbackupfolder/$filename.OK
-    
+	    #dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
+	    #&& touch $NCIbackupfolder/$filename.OK
+    	cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $NCIbackupfolder/$filename.OK"
+		echo $cmd;
+    	eval $cmd;
+    	
         #download the associated attibutes of file stored in json
         echo "Downloading $filename attributes from DNANexus"
-        dx describe "$projectname":"$filepath" --json >> "$filename".json
+        #dx describe "$projectname":"$filepath" --json >> "$filename".json
+    	cmd="dx describe $projectname:$filepath --json >> $filename.json"
+    	echo $cmd;
+    	eval $cmd;
 
     done
         
@@ -90,9 +106,7 @@ else
     filename=`basename "$filepath"`
     filedir=`dirname "$filepath"`
     
-    echo "Downloading $filename from DNANexus"
-    #dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder \
-    #&& touch $NCIbackupfolder/$filename.done
+    echo "Downloading $filename from DNANexus";
     cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done";
     echo $cmd;
     eval $cmd;
@@ -101,16 +115,13 @@ else
     cd $NCIbackupfolder
 
     #check md5 sums and integrity of file
-    #dx-verify-file -l $filename -r `dx find data --brief --norecurse --path "$projectname":"$filedir"  --name "$filename" | cut -d ':' -f 2` \
-    #& touch "$filename".OK
-    cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK"
+    cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK";
 	echo $cmd;
     eval $cmd;
     
     #download the associated attibutes of file stored in json
-    echo "Downloading $filename attributes from DNANexus"
-    #dx describe "$projectname":"$filepath" --json >> "$filename".json
-    cmd="dx describe $projectname:$filepath --json >> $filename.json"
+    echo "Downloading $filename attributes from DNANexus";
+    cmd="dx describe $projectname:$filepath --json >> $filename.json";
     echo $cmd;
     eval $cmd;
     
