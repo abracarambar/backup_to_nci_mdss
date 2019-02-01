@@ -25,6 +25,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     [[ -d $NCIbackupfolder\/$samplename\_fastq_files ]] || mkdir $NCIbackupfolder\/$samplename\_fastq_files
     cd $NCIbackupfolder/$samplename\_fastq_files
     echo "Extract all fastq files for $samplename";
+    
     cmd="dx find data --class file --norecurse --property external_id=$samplename --path $projectname_dir | tr -s ' ' ' ' | cut -f6 -d ' ' | cut -f2- -d '/'";
     echo $cmd;
     eval $cmd;
@@ -42,8 +43,10 @@ if [[ $1 == *"inputFastq"* ]]; then
     	echo "$fastqfilepathmd5"
        	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
-        dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
-        && touch $NCIbackupfolder/$filename.done
+    	if [ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ];
+        	dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        	&& touch $NCIbackupfolder/$filename.done
+        fi
         dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         && touch $NCIbackupfolder/$filename.md5.done
         
