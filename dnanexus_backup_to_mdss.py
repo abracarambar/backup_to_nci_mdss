@@ -5,14 +5,10 @@ import os
 import subprocess
 
 def main():
-    '''
-    place your DNANexus token in a token.txt file within the folder you are running the scripts
-    to do: check files downloaded ok and remove files once they have downloaded
-    '''
+
     parser = argparse.ArgumentParser()
     normal_sample, tumour_sample, runID = my_parse_args(parser)
     print normal_sample, tumour_sample, runID
-    SCRIPTDIR='g/data3/rj76/scripts'
     with open ('./token.txt') as fin:
         #fin.readline()
         for line in fin:

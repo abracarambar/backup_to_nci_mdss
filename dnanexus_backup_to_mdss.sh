@@ -1,11 +1,13 @@
-#!/bin/bash
-
-source /g/data3/rj76/software/dx-toolkit/environment
+#!/usr/bin/env bash
+#set -e -o pipefail
+dx_env="/g/data3/rj76/software/dx-toolkit/environment"
+source $dx_env
 pwd
 token="$3"
-current_dir=`pwd`
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 #NCIbackupfolder="/g/data3/rj76/research/NCIbackupfolder"
-NCIbackupfolder="$current_dir/NCIbackupfolder"
+NCIbackupfolder="$scriptdir/NCIbackupfolder"
 [[ -d $NCIbackupfolder ]] || mkdir $NCIbackupfolder
 
 #login to dnanexus
@@ -36,10 +38,14 @@ if [[ $1 == *"inputFastq"* ]]; then
     	#HH3TCCCXY_2_180304_FD01070327_Homo-sapiens__R_160805_EMIMOU_LIONSDNA_M029_R2.fastq.gz
     	filedir=`echo $filepath | cut -f1 -d '/'`
     	echo "$filedir"
-    	#inputFastq
+    	fastqfilepathmd5=$filepath\.md5
+    	echo "$fastqfilepathmd5"
+       	#inputFastq
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         && touch $NCIbackupfolder/$filename.done
+        dx download -a -f "$projectname":"$fastqfilemd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        && touch $NCIbackupfolder/$filename.md5.done
         
         #check md5 sums and integrity of file
 	    dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
@@ -48,6 +54,7 @@ if [[ $1 == *"inputFastq"* ]]; then
         #download the associated attibutes of file stored in json
         echo "Downloading $filename attributes from DNANexus"
         dx describe "$projectname":"$filepath" --json >> "$filename".json
+
     done
         
     echo "Setting file permissions for $samplename fastq folder"
@@ -81,7 +88,8 @@ else
     filedir=`dirname "$filepath"`
     
     echo "Downloading $filename from DNANexus"
-    dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder && touch "$filename".done
+    dx download -a -f "$projectname":"$filepath" -o $NCIbackupfolder \
+    && touch $NCIbackupfolder/$filename.done
     #move into the backup folder
     cd $NCIbackupfolder
 
