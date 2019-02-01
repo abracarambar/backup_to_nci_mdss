@@ -37,7 +37,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     	filedir=`echo $filepath | cut -f1 -d '/'`
     	echo "$filedir"
     	#inputFastq
-    	echo "Downloading $filename from DNANexus into $samplename fastq folder";
+    	echo "Downloading $filename from DNANexus into $samplename fastq folder"
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         && touch $NCIbackupfolder/$filename.done
         
@@ -60,7 +60,7 @@ if [[ $1 == *"inputFastq"* ]]; then
 	tar -cvf $PBS_JOBFS/$samplename\_fastq_files.tar $NCIbackupfolder\/$samplename\_fastq_files
 	tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $PBS_JOBFS/$samplename\_fastq_files.tar.contents
 
-	if [ $(mdss -P tx70 ls dnanexus_backup/${samplename}.tar | wc -l) = 0 ]; then
+	if [ $(mdss -P tx70 dnanexus_backup/ | grep ${samplename}.tar | wc -l) = 0 ]; then
 		echo "Uploading the tar file to massdata"
     	mdss -P tx70 put $PBS_JOBFS/${samplename}\_fastq_files.tar dnanexus_backup/
     	#echo "Keep a copy of tar contents"
@@ -115,7 +115,7 @@ else
 	tar -cvf $PBS_JOBFS/${filename}.tar $filename $filename.json
 	tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
 	
-	if [ $(mdss -P tx70 ls dnanexus_backup/${filename}.tar | wc -l) = 0 ]
+	if [ $(mdss -P tx70 ls dnanexus_backup/ | grep ${filename}.tar | wc -l) = 0 ]
 	then
 		echo "Uploading the TAR to massdata"
     	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
