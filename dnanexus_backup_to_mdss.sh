@@ -44,7 +44,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
         dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         && touch $NCIbackupfolder/$filename.done
-        dx download -a -f "$projectname":"$fastqfilemd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         && touch $NCIbackupfolder/$filename.md5.done
         
         #check md5 sums and integrity of file
