@@ -45,8 +45,8 @@ if [[ $1 == *"inputFastq"* ]]; then
     	echo "Downloading $filename from DNANexus into $samplename fastq folder"
     	#remove this lien when fix done##
     	#if [ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ]; then
-    		#dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
-        	#&& touch $NCIbackupfolder/$filename.done
+    	#	dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
+        #	&& touch $NCIbackupfolder/$filename.done
 		cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder/$samplename_fastq_files && touch $NCIbackupfolder/$filename.done";
     	echo $cmd;
 		eval $cmd;
