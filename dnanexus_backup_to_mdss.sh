@@ -51,7 +51,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     	    echo $cmd;
 		    eval $cmd;
         	
-        #fi
+        fi
         
         #dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         #&& touch $NCIbackupfolder/$filename.md5.done
