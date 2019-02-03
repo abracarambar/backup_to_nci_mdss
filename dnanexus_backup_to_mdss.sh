@@ -47,17 +47,17 @@ if [[ $1 == *"inputFastq"* ]]; then
     	#[ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ]; then
     	#	dx download -a -f "$projectname":"$filepath" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         #	&& touch $NCIbackupfolder/$filename.done
-		##cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.done";
-    	##echo $cmd;
-		##eval $cmd;
+		cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.done";
+    	echo $cmd;
+		eval $cmd;
         	
         #fi
         
         #dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         #&& touch $NCIbackupfolder/$filename.md5.done
-        ##cmd="dx download -a -f $projectname:$fastqfilepathmd5 -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.md5.done";
-        ##echo $cmd;
-    	##eval $cmd;
+        cmd="dx download -a -f $projectname:$fastqfilepathmd5 -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.md5.done";
+        echo $cmd;
+    	eval $cmd;
         
         
         #check md5 sums and integrity of file
