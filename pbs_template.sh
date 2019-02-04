@@ -22,10 +22,10 @@ module load parallel
 #PROJECT=$3
 
 #python dnanexus_backup_to_mdss.py -n 'LKCGP-P000204-251963-02-04-07-G1' -t 'LKCGP-P000204-251965-01-04-01-D1' -r 'project-FBj2Qjj0py0YVyV03BBpK4by'
-#qsub -N P000902_backup -v NORMAL=LKCGP-P000902-252287-02-01-07-G1,TUMOUR=LKCGP-P000902-252200-01-01-01-D1,PROJECT=project-FBy3PQ80PbZPFGxK0598KZJk pbs_template.sh
+#qsub -N P000902_backup -v NORMAL=LKCGP-P000902-252287-02-01-07-G1,TUMOUR=LKCGP-P000902-252200-01-01-01-D1,RUNID=project-FBy3PQ80PbZPFGxK0598KZJk pbs_template.sh
 
 
-python dnanexus_backup_to_mdss.py -n ${NORMAL} -t ${TUMOUR} -r ${PROJECT}
+python dnanexus_backup_to_mdss.py -n ${NORMAL} -t ${TUMOUR} -r ${RUNID}
 
 #bash dnanexus_backup_to_mdss.sh "project-FBj2Qjj0py0YVyV03BBpK4by" "variants/P000204.D1vsG1.strelka.pass.vcf.gz"
 #bash dnanexus_backup_to_mdss.sh  
