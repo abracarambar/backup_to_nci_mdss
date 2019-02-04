@@ -115,11 +115,11 @@ else
     filedir=`dirname "$filepath"`
     
     echo "Downloading $filename from DNANexus"
-    if [ ! -f $NCIbackupfolder/$filename ]; then
-	    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done"
-	    echo $cmd;
-	    eval $cmd;
-    fi
+    #if [ ! -f $NCIbackupfolder/$filename ]; then
+    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done"
+    echo $cmd;
+    eval $cmd;
+    #fi
     
     #move into the backup folder
     cd $NCIbackupfolder
