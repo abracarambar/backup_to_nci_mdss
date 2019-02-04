@@ -104,6 +104,7 @@ if [[ $1 == *"inputFastq"* ]]; then
 		echo "The tar file already exists on mdss!"
 	exit 1
 	fi
+
     
 #all other files
 else
@@ -118,6 +119,7 @@ else
 	    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done"
 	    echo $cmd;
 	    eval $cmd;
+    fi
     
     #move into the backup folder
     cd $NCIbackupfolder
