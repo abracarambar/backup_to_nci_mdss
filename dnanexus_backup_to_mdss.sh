@@ -114,6 +114,7 @@ else
     
     #move into the backup folder
     cd $NCIbackupfolder
+    pwd
 
     #check md5 sums and integrity of file
     cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK"
