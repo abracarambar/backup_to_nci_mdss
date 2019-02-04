@@ -56,24 +56,30 @@ if [[ $1 == *"inputFastq"* ]]; then
         
         #dx download -a -f "$projectname":"$fastqfilepathmd5" -o "$NCIbackupfolder"\/"$samplename"\_fastq_files \
         #&& touch $NCIbackupfolder/$filename.md5.done
-        cmd="dx download -a -f $projectname:$fastqfilepathmd5 -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.md5.done";
-        echo $cmd;
-    	eval $cmd;
+        if [ ! -f $NCIbackupfolder/$samplename\_fastq\_files/$filename ]; then
+        	cmd="dx download -a -f $projectname:$fastqfilepathmd5 -o $NCIbackupfolder/$samplename\_fastq\_files && touch $NCIbackupfolder/$filename.md5.done";
+        	echo $cmd;
+    		eval $cmd;
+    		
+    		cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $NCIbackupfolder/$filename.OK"		
+			echo $cmd;
+    		eval $cmd;
+    		
+    		#check md5 sums and integrity of file
+	    	#dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
+	    	#&& touch $NCIbackupfolder/$filename.OK
+    		cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $NCIbackupfolder/$filename.OK"		
+			echo $cmd;
+    		eval $cmd;
+    		
+    		#download the associated attibutes of file stored in json
+        	echo "Downloading $filename attributes from DNANexus"
+        	#dx describe "$projectname":"$filepath" --json >> "$filename".json
+    		cmd="dx describe $projectname:$filepath --json >> $filename.json"
+    		echo $cmd;
+    		eval $cmd;
+        fi
         
-        
-        #check md5 sums and integrity of file
-	    #dx-verify-file -l "$filename" -r `dx find data --brief --norecurse --path "$projectname":"$filedir" --name "$filename" | cut -d ':' -f 2` \
-	    #&& touch $NCIbackupfolder/$filename.OK
-    	cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $NCIbackupfolder/$filename.OK"		
-		echo $cmd;
-    	eval $cmd;
-    	
-        #download the associated attibutes of file stored in json
-        echo "Downloading $filename attributes from DNANexus"
-        #dx describe "$projectname":"$filepath" --json >> "$filename".json
-    	cmd="dx describe $projectname:$filepath --json >> $filename.json"
-    	echo $cmd;
-    	eval $cmd;
 
     done
         
@@ -147,7 +153,7 @@ else
 	
 	#create tar file via jobfs
 	echo "Creating tar file"
-	tar -cvf $PBS_JOBFS/${filename}.tar $filename $filename.json
+	tar -cvf $PBS_JOBFS/${filename}.tar $filename ${filename}.json
 	tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
 	
 	if [ $(mdss -P tx70 ls dnanexus_backup/ | grep ${filename}.tar | wc -l) = 0 ]
