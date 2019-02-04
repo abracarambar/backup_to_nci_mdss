@@ -17,9 +17,9 @@ set -euf -o pipefail
 
 module load python/2.7.3
 module load parallel
-NORMAL=$1
-TUMOUR=$2
-PROJECT=$3
+#NORMAL=$1
+#TUMOUR=$2
+#PROJECT=$3
 
 #python dnanexus_backup_to_mdss.py -n 'LKCGP-P000204-251963-02-04-07-G1' -t 'LKCGP-P000204-251965-01-04-01-D1' -r 'project-FBj2Qjj0py0YVyV03BBpK4by'
 #qsub -v "NORMAL=LKCGP-P000204-251963-02-04-07-G1,TUMOUR=LKCGP-P000204-251965-01-04-01-D1,PROJECT=project-FBj2Qjj0py0YVyV03BBpK4by" pbs_template.sh 
