@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-set -e -o pipefail
+#set -e -o pipefail
 dx_env="/g/data3/rj76/software/dx-toolkit/environment"
 source $dx_env
 pwd
+
 token="$3"
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
