@@ -3,7 +3,6 @@
 dx_env="/g/data3/rj76/software/dx-toolkit/environment"
 source $dx_env
 pwd
-echo "you are here"
 
 token="$3"
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -114,7 +113,7 @@ else
     eval $cmd;
     
     #move into the backup folder
-    cd $NCIbackupfolder
+    cd $NCIbackupfolder;
 
     #check md5 sums and integrity of file
     cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK";
@@ -129,8 +128,9 @@ else
     
     #if file is g.vcf, then fix
     #rename filename
-    echo "Fixing g.vcf names"
+    
     if [[ $filename == *"gvcf"* ]]; then
+    	echo "Fixing g.vcf names"
 	    newfilename="$(echo ${filename} | sed -e 's/gvcf/g\.vcf/')"
 	    mv $filename $newfilename
 	    newjson="$(echo ${filename}.json | sed -e 's/gvcf/g\.vcf/')"
