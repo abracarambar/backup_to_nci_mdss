@@ -3,6 +3,7 @@
 dx_env="/g/data3/rj76/software/dx-toolkit/environment"
 source $dx_env
 pwd
+echo "you are here"
 
 token="$3"
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
