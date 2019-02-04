@@ -107,24 +107,24 @@ else
     filename=`basename "$filepath"`
     filedir=`dirname "$filepath"`
     
-    echo "Downloading $filename from DNANexus";
-    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done";
+    echo "Downloading $filename from DNANexus"
+    cmd="dx download -a -f $projectname:$filepath -o $NCIbackupfolder && touch $NCIbackupfolder/$filename.done"
     echo $cmd;
     eval $cmd;
     
     #move into the backup folder
-    cd $NCIbackupfolder;
+    cd $NCIbackupfolder
 
     #check md5 sums and integrity of file
-    cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK";
-	echo $cmd;
-    eval $cmd;
+    cmd="dx-verify-file -l $filename -r `dx find data --brief --norecurse --path $projectname:$filedir --name $filename | cut -d ':' -f 2` & touch $filename.OK"
+	echo $cmd
+    eval $cmd
     
     #download the associated attibutes of file stored in json
-    echo "Downloading $filename attributes from DNANexus";
-    cmd="dx describe $projectname:$filepath --json >> $filename.json";
-    echo $cmd;
-    eval $cmd;
+    echo "Downloading $filename attributes from DNANexus"
+    cmd="dx describe $projectname:$filepath --json >> $filename.json"
+    echo $cmd
+    eval $cmd
     
     #if file is g.vcf, then fix
     #rename filename
