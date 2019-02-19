@@ -91,7 +91,7 @@ if [[ $1 == *"inputFastq"* ]]; then
 	#create tar file via jobfs
 	echo "Creating a tar file for $samplename fastq folder"
 	tar -cvf $PBS_JOBFS/$samplename\_fastq_files.tar $NCIbackupfolder\/$samplename\_fastq_files
-	tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $PBS_JOBFS/$samplename\_fastq_files.tar.contents
+	tar -tf $PBS_JOBFS/$samplename\_fastq_files.tar > $samplename\_fastq_files.tar.contents
 
 	if [ $(mdss -P tx70 dnanexus_backup/ | grep ${samplename}.tar | wc -l) = 0 ]; then
 		echo "Uploading the tar file to massdata"
@@ -102,7 +102,7 @@ if [[ $1 == *"inputFastq"* ]]; then
     	mdss -P tx70 verify -v dnanexus_backup/${samplename}\_fastq_files.tar
 	else    
 		echo "The tar file already exists on mdss!"
-	exit 1
+	    exit 1
 	fi
 
     
@@ -140,35 +140,35 @@ else
     #rename filename
     
     if [[ $filename == *"gvcf"* ]]; then
-    	echo "Fixing g.vcf names"
-	    newfilename="$(echo ${filename} | sed -e 's/gvcf/g\.vcf/')"
-	    mv $filename $newfilename
-	    newjson="$(echo ${filename}.json | sed -e 's/gvcf/g\.vcf/')"
-	    mv ${filename}.json $newjson
-	    filename=$newfilename
-	    echo $filename
-	fi
+        echo "Fixing g.vcf names"
+        newfilename="$(echo ${filename} | sed -e 's/gvcf/g\.vcf/')"
+        mv $filename $newfilename
+        newjson="$(echo ${filename}.json | sed -e 's/gvcf/g\.vcf/')"
+        mv ${filename}.json $newjson
+        filename=$newfilename
+        echo $filename
+    fi
 	
 	#set permissions
-	echo "Setting file permissions for $filename and for $filename.json"
-	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
-	setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json
+    echo "Setting file permissions for $filename and for $filename.json"
+    setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename
+    setfacl -m group:tx70:rw-,other::r--,user:cmv562:rwx,user:mw9491:rwx,user:mg3536:rwx $filename.json
 	
 	#create tar file via jobfs
-	echo "Creating tar file"
-	tar -cvf $PBS_JOBFS/${filename}.tar $filename ${filename}.json
+    echo "Creating tar file"
+    tar -cvf $PBS_JOBFS/${filename}.tar $filename ${filename}.json
 	tar -tf $PBS_JOBFS/${filename}.tar > $PBS_JOBFS/${filename}.tar.contents
 	
-	if [ $(mdss -P tx70 ls dnanexus_backup/ | grep ${filename}.tar | wc -l) = 0 ]
-	then
-		echo "Uploading the TAR to massdata"
-    	mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
-    	#echo "Keep a copy of tar contents"
-    	cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
-    	echo "Verifying the TAR has been transferred successfully"
-    	mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
-	else
-    	echo "Tar already exists on mdss!"
-    	exit 1
-	fi
+    if [ $(mdss -P tx70 ls dnanexus_backup/ | grep ${filename}.tar | wc -l) = 0 ]
+    then
+        echo "Uploading the TAR to massdata"
+        mdss -P tx70 put $PBS_JOBFS/${filename}.tar dnanexus_backup/
+        #echo "Keep a copy of tar contents"
+        cp $PBS_JOBFS/${filename}.tar.contents $NCIbackupfolder
+        echo "Verifying the TAR has been transferred successfully"
+        mdss -P tx70 verify -v dnanexus_backup/${filename}.tar
+    else
+        echo "Tar already exists on mdss!"
+        exit 1
+    fi
 fi
